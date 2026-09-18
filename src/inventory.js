@@ -15,14 +15,15 @@ export function addItem({ sku, name, quantity, priceCents }) {
 }
 
 export function removeStock(sku, quantity) {
-  const item = items.get(sku);
+  const key = sku.trim().toUpperCase();
+  const item = items.get(key);
   if (!item) throw new Error(`unknown sku ${sku}`);
   item.quantity = item.quantity - quantity;
   return item;
 }
 
 export function getItem(sku) {
-  return items.get(sku);
+  return items.get(sku.trim().toUpperCase());
 }
 
 export function listItems() {
