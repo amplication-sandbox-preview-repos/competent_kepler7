@@ -26,3 +26,15 @@ test("totalValue sums quantity times price", () => {
   addItem({ sku: "B2", name: "Gadget", quantity: 1, priceCents: 1000 });
   assert.equal(totalValue(), 1750);
 });
+
+test("failed over-removal keeps quantity unchanged and total value non-negative", () => {
+  addItem({ sku: "A1", name: "Widget", quantity: 3, priceCents: 250 });
+
+  assert.throws(() => removeStock("A1", 10), {
+    code: "INSUFFICIENT_STOCK",
+  });
+
+  assert.equal(getItem("A1").quantity, 3);
+  assert.equal(totalValue(), 750);
+  assert.ok(totalValue() >= 0);
+});
