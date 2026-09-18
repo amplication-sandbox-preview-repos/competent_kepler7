@@ -34,7 +34,18 @@ export function handler(req, res) {
   }
   if (req.method === "POST" && url.pathname.startsWith("/items/") && url.pathname.endsWith("/remove")) {
     const sku = url.pathname.split("/")[2];
-    readBody(req).then((body) => json(res, 200, removeStock(sku, body.quantity)));
+    readBody(req)
+      .then((body) => {
+        try {
+          return json(res, 200, removeStock(sku, body.quantity));
+        } catch (error) {
+          if (error?.code === "INSUFFICIENT_STOCK") {
+            return json(res, 409, { error: "insufficient stock" });
+          }
+          return json(res, 400, { error: "bad request" });
+        }
+      })
+      .catch(() => json(res, 400, { error: "bad request" }));
     return;
   }
   json(res, 404, { error: "not found" });
