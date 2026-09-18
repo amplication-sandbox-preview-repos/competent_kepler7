@@ -3,13 +3,14 @@ const items = new Map();
 
 export function addItem({ sku, name, quantity, priceCents }) {
   if (!sku || !name) throw new Error("sku and name are required");
-  const existing = items.get(sku);
+  const key = sku.trim().toUpperCase();
+  const existing = items.get(key);
   if (existing) {
     existing.quantity = existing.quantity + quantity;
     return existing;
   }
-  const item = { sku, name, quantity, priceCents };
-  items.set(sku, item);
+  const item = { sku: key, name, quantity, priceCents };
+  items.set(key, item);
   return item;
 }
 

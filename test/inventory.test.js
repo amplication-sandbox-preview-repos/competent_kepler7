@@ -15,6 +15,12 @@ test("addItem merges quantity for an existing sku", () => {
   assert.equal(getItem("A1").quantity, 5);
 });
 
+test("skus are case-insensitive", () => {
+  addItem({ sku: "a1", name: "Widget", quantity: 3, priceCents: 250 });
+  assert.equal(getItem("A1").quantity, 3);
+  assert.equal(getItem("a1").quantity, 3);
+});
+
 test("removeStock decrements quantity", () => {
   addItem({ sku: "A1", name: "Widget", quantity: 3, priceCents: 250 });
   removeStock("A1", 1);
