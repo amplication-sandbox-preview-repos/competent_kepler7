@@ -57,3 +57,41 @@ test("POST /items/:sku/remove returns 409 for insufficient stock with valid quan
   assert.equal(res.status, 409);
   assert.deepEqual(JSON.parse(res.body), { error: "insufficient stock" });
 });
+
+test("POST /items/:sku/remove returns 200 and updated item for valid removal", async () => {
+  addItem({ sku: "A1", name: "Widget", quantity: 3, priceCents: 250 });
+
+  const req = makeReq({ method: "POST", url: "/items/A1/remove", body: { quantity: 2 } });
+  const res = makeRes();
+
+  handler(req, res);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(res.status, 200);
+  assert.deepEqual(JSON.parse(res.body), {
+    sku: "A1",
+    name: "Widget",
+    quantity: 1,
+    priceCents: 250,
+  });
+});
+
+test("POST /items/:sku/remove returns 400 for malformed JSON", async () => {
+  addItem({ sku: "A1", name: "Widget", quantity: 3, priceCents: 250 });
+
+  const req = {
+    method: "POST",
+    url: "/items/A1/remove",
+    headers: { host: "localhost" },
+    async *[Symbol.asyncIterator]() {
+      yield Buffer.from('{"quantity":');
+    },
+  };
+  const res = makeRes();
+
+  handler(req, res);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(res.status, 400);
+  assert.deepEqual(JSON.parse(res.body), { error: "bad request" });
+});
