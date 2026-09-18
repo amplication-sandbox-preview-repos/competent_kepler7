@@ -16,6 +16,11 @@ export function addItem({ sku, name, quantity, priceCents }) {
 export function removeStock(sku, quantity) {
   const item = items.get(sku);
   if (!item) throw new Error(`unknown sku ${sku}`);
+  if (typeof quantity !== "number" || !Number.isFinite(quantity) || quantity <= 0) {
+    const err = new Error("quantity must be a positive number");
+    err.code = "INVALID_QUANTITY";
+    throw err;
+  }
   if (quantity > item.quantity) {
     const err = new Error(`insufficient stock for sku ${sku}`);
     err.code = "INSUFFICIENT_STOCK";

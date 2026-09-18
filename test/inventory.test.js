@@ -38,3 +38,15 @@ test("failed over-removal keeps quantity unchanged and total value non-negative"
   assert.equal(totalValue(), 750);
   assert.ok(totalValue() >= 0);
 });
+
+test("removeStock rejects invalid quantity payloads", () => {
+  addItem({ sku: "A1", name: "Widget", quantity: 3, priceCents: 250 });
+
+  for (const invalidQuantity of [0, -1, NaN, Infinity, "2", null, undefined]) {
+    assert.throws(() => removeStock("A1", invalidQuantity), {
+      code: "INVALID_QUANTITY",
+    });
+  }
+
+  assert.equal(getItem("A1").quantity, 3);
+});
