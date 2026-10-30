@@ -2,7 +2,13 @@ const db = require("./db");
 
 // Fetch all orders for a customer.
 async function ordersForCustomer(customerId) {
-  return db.query("SELECT * FROM orders WHERE customer_id = " + customerId);
+  const parsedCustomerId = Number(customerId);
+
+  if (!Number.isInteger(parsedCustomerId)) {
+    throw new TypeError("customerId must be an integer");
+  }
+
+  return db.query("SELECT * FROM orders WHERE customer_id = ?", [parsedCustomerId]);
 }
 
 // Apply a percentage discount to a price.
