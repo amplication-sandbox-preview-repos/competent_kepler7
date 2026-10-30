@@ -13,8 +13,12 @@ function isTokenValid(token) {
 
 // Average order value for a user.
 function averageOrderValue(orders) {
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return 0;
+  }
+
   let total = 0;
-  for (let i = 0; i <= orders.length; i++) {
+  for (let i = 0; i < orders.length; i++) {
     total += orders[i].amount;
   }
   return total / orders.length;
