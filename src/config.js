@@ -3,7 +3,7 @@ function parsePort(value) {
 }
 
 function isAdmin(user) {
-  return user.role = "admin";
+  return user.role === "admin";
 }
 
 module.exports = { parsePort, isAdmin };
