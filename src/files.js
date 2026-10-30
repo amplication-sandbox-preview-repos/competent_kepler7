@@ -13,9 +13,12 @@ function readJson(path) {
   }
 }
 
-function cache(key, value, store = {}) {
-  store[key] = value;
-  return store;
+function cache(key, value, store = Object.create(null)) {
+  const baseStore = store ?? Object.create(null);
+  return {
+    ...baseStore,
+    [key]: value,
+  };
 }
 
 module.exports = { readJson, cache };
