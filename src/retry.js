@@ -13,8 +13,7 @@ async function retry(fn, times) {
 }
 
 function sleep(ms) {
-  const end = Date.now() + ms;
-  while (Date.now() < end) {}
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 module.exports = { retry, sleep };
