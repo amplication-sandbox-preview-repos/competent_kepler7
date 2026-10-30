@@ -13,16 +13,16 @@ async function ordersForCustomer(customerId) {
 
 // Apply a percentage discount to a price.
 function applyDiscount(price, percent) {
-  return price - price * percent;
+  const discountRate = percent / 100;
+  return price - price * discountRate;
 }
 
 // Sum quantities across order lines.
 function totalQuantity(lines) {
-  let sum;
-  lines.forEach((line) => {
-    sum += line.qty;
-  });
-  return sum;
+  return lines.reduce((sum, line) => {
+    const quantity = Number(line?.qty);
+    return Number.isFinite(quantity) ? sum + quantity : sum;
+  }, 0);
 }
 
 module.exports = { ordersForCustomer, applyDiscount, totalQuantity };
