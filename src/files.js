@@ -1,7 +1,16 @@
 const fs = require("fs");
 
 function readJson(path) {
-  return JSON.parse(fs.readFileSync(path));
+  try {
+    const content = fs.readFileSync(path, "utf8");
+    return JSON.parse(content);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new SyntaxError(`Failed to parse JSON file at ${path}: ${error.message}`);
+    }
+
+    throw error;
+  }
 }
 
 function cache(key, value, store = {}) {
